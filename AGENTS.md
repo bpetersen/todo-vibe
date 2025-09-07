@@ -17,9 +17,9 @@ A living guide to the AI (and human) roles that help us build a **clean, event-d
 
 ## Core Vocabulary
 
-* **Command** — an intention: `CreateTodo`, `RenameTodo`, `CompleteTodo`, `ScheduleDueDate`.
-* **Aggregate** — consistency boundary: `Todo`, `Project`, `Tag`.
-* **Event** — something that happened: `TodoCreated`, `TodoRenamed`, `TodoCompleted`, `DueDateScheduled`, `TodoReopened`, `TodoDeleted`, `TagAddedToTodo`, `TagRemovedFromTodo`.
+* **Command** — an intention: `CreateList`, `CreateTodo`, `RenameTodo`, `CompleteTodo`, `ScheduleDueDate`.
+* **Aggregate** — consistency boundary: `List` (collection of todos), `Todo`, `Project`, `Tag`.
+* **Event** — something that happened: `ListCreated`, `TodoCreated`, `TodoRenamed`, `TodoCompleted`, `DueDateScheduled`, `TodoReopened`, `TodoDeleted`, `TagAddedToTodo`, `TagRemovedFromTodo`.
 * **Read model** — query-optimized projections: e.g., “Today’s Tasks”, “Overdue by Project”.
 
 Keep names past-tense for events, imperative for commands, and align with ubiquitous language.
@@ -151,6 +151,7 @@ Each “agent” is a focused hat you (and I) can put on. Invoke one by name wit
 
 | Event                | Emitted When                    | Key Data                                     | Invariants                     |
 | -------------------- | ------------------------------- | -------------------------------------------- | ------------------------------ |
+| `ListCreated`        | `CreateList` accepted           | `listId`, `name`, `createdAt`                | Name non-empty                |
 | `TodoCreated`        | `CreateTodo` accepted           | `todoId`, `title`, `createdAt`, `projectId?` | Title non-empty                |
 | `TodoRenamed`        | `RenameTodo` on existing todo   | `todoId`, `newTitle`, `renamedAt`            | Title non-empty; changes value |
 | `TodoCompleted`      | `CompleteTodo` on not-done todo | `todoId`, `completedAt`                      | Can’t complete twice           |
