@@ -1,9 +1,13 @@
 import React from 'react';
 import ReactDOM from 'react-dom/client';
 import App from './App';
+import List from './List';
 
-ReactDOM.createRoot(document.getElementById('root')!).render(
+const root = ReactDOM.createRoot(document.getElementById('root')!);
+const Component = window.location.pathname.startsWith('/lists/') ? List : App;
+
+root.render(
   <React.StrictMode>
-    <App />
-  </React.StrictMode>
+    <Component />
+  </React.StrictMode>,
 );
