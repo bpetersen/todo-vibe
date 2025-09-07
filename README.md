@@ -40,14 +40,8 @@ curl -X POST http://localhost:3000/api/lists
 
 ## Running with Docker Compose
 
-Start the API with a Postgres database:
+Start the stack; migrations run before the API begins accepting requests:
 
 ```sh
 docker compose up
-```
-
-Run database migrations inside the container:
-
-```sh
-docker compose run api npm run migrate
 ```
