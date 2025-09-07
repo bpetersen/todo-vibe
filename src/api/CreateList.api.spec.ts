@@ -39,11 +39,20 @@ afterAll(async () => {
   server.close();
 });
 
-test('POST /api/lists returns an id and stores it', async () => {
-  const res = await fetch(`${url}/api/lists`, { method: 'POST' });
+test('POST /api/lists accepts a name and stores it', async () => {
+  const res = await fetch(`${url}/api/lists`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ name: 'Groceries' }),
+  });
   expect(res.status).toBe(201);
   const body = await res.json();
   expect(body).toMatchObject({ id: expect.any(String) });
-  const saved = await db.query('SELECT id FROM lists WHERE id = $1', [body.id]);
-  expect(saved.rowCount).toBe(1);
+  const saved = await db.query('SELECT id, name FROM lists WHERE id = $1', [body.id]);
+  expect(saved.rows[0]).toMatchObject({ id: body.id, name: 'Groceries' });
+
+  const getRes = await fetch(`${url}/api/lists/${body.id}`);
+  expect(getRes.status).toBe(200);
+  const list = await getRes.json();
+  expect(list).toEqual({ id: body.id, name: 'Groceries' });
 });

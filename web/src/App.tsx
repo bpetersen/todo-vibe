@@ -2,7 +2,12 @@ import './App.css';
 
 export default function App() {
   async function createList() {
-    const response = await fetch('/api/lists', { method: 'POST' });
+    const name = window.prompt('List name?') ?? 'New List';
+    const response = await fetch('/api/lists', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ name }),
+    });
     const { id } = await response.json();
     window.location.assign(`/lists/${id}`);
   }
