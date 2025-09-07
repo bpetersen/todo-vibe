@@ -6,6 +6,6 @@
     "test": "tsx src/domain/todo/CreateTodo.spec.ts"
   },
   "devDependencies": {
-    "tsx": "^4.7.0"
+    "tsx": "^4.20.5"
   }
 }
