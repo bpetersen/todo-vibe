@@ -1,7 +1,10 @@
-export function CreateTodo({ todoId, title, createdAt }: { todoId: string; title: string; createdAt: Date }) {
+import type { TodoCreated } from './events';
+
+export function CreateTodo({ todoId, title, createdAt }: { todoId: string; title: string; createdAt: Date }): TodoCreated[] {
   if (!title.trim()) {
     throw new Error('title must be non-empty');
   }
 
-  return [{ type: 'TodoCreated', data: { todoId, title, createdAt } }];
+  const event: TodoCreated = { type: 'TodoCreated', data: { todoId, title, createdAt } };
+  return [event];
 }
