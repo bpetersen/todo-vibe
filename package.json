@@ -3,9 +3,25 @@
   "version": "0.0.0",
   "type": "module",
   "scripts": {
-    "test": "tsx src/domain/todo/CreateTodo.spec.ts"
+    "test:domain": "tsx src/domain/todo/CreateTodo.spec.ts",
+    "test:web": "vitest run",
+    "test": "npm run test:domain && npm run test:web",
+    "dev": "vite"
+  },
+  "dependencies": {
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0"
   },
   "devDependencies": {
-    "tsx": "^4.20.5"
+    "@testing-library/jest-dom": "^6.4.2",
+    "@testing-library/react": "^14.1.2",
+    "@types/react": "^18.2.14",
+    "@types/react-dom": "^18.2.7",
+    "@vitejs/plugin-react": "^4.2.1",
+    "jsdom": "^24.0.0",
+    "tsx": "^4.20.5",
+    "typescript": "^5.3.3",
+    "vite": "^5.0.10",
+    "vitest": "^1.2.0"
   }
 }
