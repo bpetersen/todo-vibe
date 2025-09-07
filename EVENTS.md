@@ -26,3 +26,16 @@ Emitted when a todo is marked as completed.
 ### Notes
 
 - Currently no guard against double completion.
+
+## TodoReopened
+
+Emitted when a completed todo is reopened.
+
+### Data
+
+- `todoId`: string
+- `reopenedAt`: Date
+
+### Notes
+
+- Only allowed if the todo was previously completed and not already reopened.
