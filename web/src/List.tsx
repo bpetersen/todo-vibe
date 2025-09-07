@@ -44,6 +44,7 @@ export default function List() {
     <main className="list">
       <h1>{name}</h1>
       <input
+        type="text"
         placeholder="Add a todo"
         value={title}
         onChange={e => setTitle(e.target.value)}
@@ -53,7 +54,10 @@ export default function List() {
       />
       <ul>
         {todos.map(todo => (
-          <li key={todo.id} className={todo.completed ? 'completed' : ''}>
+          <li
+            key={todo.id}
+            className={`todo-item${todo.completed ? ' completed' : ''}`}
+          >
             <label>
               <input
                 type="checkbox"

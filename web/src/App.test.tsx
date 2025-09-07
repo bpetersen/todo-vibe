@@ -9,6 +9,9 @@ test('renders intro layout', () => {
   expect(
     screen.getByText(/organize your tasks with style/i)
   ).toBeInTheDocument();
+  expect(
+    screen.getByRole('button', { name: /start a new list/i })
+  ).toHaveClass('start-button');
 });
 
 const originalFetch = global.fetch;
