@@ -13,18 +13,23 @@ test('renders intro layout', () => {
 
 const originalFetch = global.fetch;
 const originalLocation = window.location;
+const originalPrompt = window.prompt;
 
 afterEach(() => {
   global.fetch = originalFetch;
   Object.defineProperty(window, 'location', { value: originalLocation });
+  window.prompt = originalPrompt;
 });
 
-test('posts to create a new list', async () => {
+test('posts to create a new list with a name', async () => {
   const fetchMock = vi.fn().mockResolvedValue({
     json: () => Promise.resolve({ id: 'abc123' }),
   } as any);
   // @ts-expect-error: allow test-time override
   global.fetch = fetchMock;
+
+  const promptMock = vi.fn().mockReturnValue('Groceries');
+  window.prompt = promptMock as any;
 
   const assignMock = vi.fn();
   Object.defineProperty(window, 'location', {
@@ -37,7 +42,12 @@ test('posts to create a new list', async () => {
   fireEvent.click(button);
 
   await waitFor(() => {
-    expect(fetchMock).toHaveBeenCalledWith('/api/lists', { method: 'POST' });
+    expect(promptMock).toHaveBeenCalled();
+    expect(fetchMock).toHaveBeenCalledWith('/api/lists', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ name: 'Groceries' }),
+    });
     expect(assignMock).toHaveBeenCalledWith('/lists/abc123');
   });
 });
