@@ -3,6 +3,7 @@ import type { Server } from 'node:http';
 import { createApp } from '../server';
 import { GenericContainer, type StartedTestContainer } from 'testcontainers';
 import { Pool } from 'pg';
+import { runMigrations } from '../migrate';
 
 let server: Server;
 let url: string;
@@ -24,7 +25,7 @@ beforeAll(async () => {
   db = new Pool({
     connectionString: `postgres://postgres:postgres@${host}:${port}/todos`,
   });
-  await db.query('CREATE TABLE lists (id uuid primary key)');
+  await runMigrations(db);
 
   server = createApp(db);
   await new Promise(resolve => server.listen(0, resolve));

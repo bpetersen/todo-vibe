@@ -7,7 +7,8 @@
     "test:web": "vitest run",
     "test:api": "vitest run -c api.vitest.config.ts",
     "test": "npm run test:domain && npm run test:api && npm run test:web",
-    "dev": "vite"
+    "dev": "vite",
+    "migrate": "tsx src/migrate.ts"
   },
   "dependencies": {
     "pg": "^8.11.3",
