@@ -3,4 +3,4 @@ WORKDIR /app
 COPY package*.json ./
 RUN npm ci
 COPY . .
-CMD ["node", "--loader", "tsx", "src/server.ts"]
+CMD ["node", "--import", "tsx", "src/server.ts"]
