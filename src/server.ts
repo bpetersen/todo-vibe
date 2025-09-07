@@ -60,7 +60,7 @@ export function createApp(db: Pool = new Pool({ connectionString: process.env.DA
       for await (const chunk of req) body += chunk;
       const { completed } = JSON.parse(body);
       if (completed) {
-        CompleteTodo({ todoId: id, completedAt: new Date() });
+        CompleteTodo([], { todoId: id, completedAt: new Date() });
       }
       await db.query('UPDATE todos SET completed = $1 WHERE id = $2', [completed, id]);
       res.statusCode = 204;

@@ -25,4 +25,4 @@ Emitted when a todo is marked as completed.
 
 ### Notes
 
-- Currently no guard against double completion.
+- `CompleteTodo` throws an error if the todo has already been completed.
