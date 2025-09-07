@@ -6,9 +6,19 @@ services:
       - DATABASE_URL=postgres://postgres:postgres@db:5432/todos
       - PORT=3000
     depends_on:
-      - db
+      migrate:
+        condition: service_completed_successfully
     ports:
       - '3000:3000'
+  migrate:
+    build: .
+    environment:
+      - DATABASE_URL=postgres://postgres:postgres@db:5432/todos
+    depends_on:
+      db:
+        condition: service_healthy
+    command: npm run migrate
+    restart: "no"
   db:
     image: postgres:16-alpine
     environment:
@@ -17,3 +27,8 @@ services:
       POSTGRES_DB: todos
     ports:
       - '5432:5432'
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
