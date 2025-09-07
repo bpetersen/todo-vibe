@@ -38,6 +38,17 @@ curl -X POST http://localhost:3000/api/lists
 # => { "id": "abc123" }
 ```
 
+### `POST /api/todos`
+
+Creates a new todo item in a list and responds with its identifier.
+
+```sh
+curl -X POST http://localhost:3000/api/todos \\
+  -H 'Content-Type: application/json' \\
+  -d '{"listId":"abc123","title":"Buy milk"}'
+# => { "id": "def456" }
+```
+
 ## Running with Docker Compose
 
 Start the stack; migrations run before the API begins accepting requests:
