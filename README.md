@@ -31,3 +31,11 @@ Creates a new list and responds with its identifier.
 curl -X POST http://localhost:3000/api/lists
 # => { "id": "abc123" }
 ```
+
+## Running with Docker Compose
+
+Start the API with a Postgres database:
+
+```sh
+docker compose up
+```
