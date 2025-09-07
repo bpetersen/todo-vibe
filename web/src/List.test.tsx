@@ -60,8 +60,9 @@ test('posts to create a new todo and displays it', async () => {
       body: JSON.stringify({ listId: 'abc123', title: 'Buy milk' }),
     });
   });
-
-  expect(await screen.findByText('Buy milk')).toBeInTheDocument();
+  const label = await screen.findByText('Buy milk');
+  expect(label).toBeInTheDocument();
+  expect(label.closest('li')).toHaveClass('todo-item');
 });
 
 test('checks off a todo and sends completion to the server', async () => {
