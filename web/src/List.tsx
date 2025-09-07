@@ -14,30 +14,35 @@ export default function List() {
   const id = window.location.pathname.split('/').pop();
 
   useEffect(() => {
-    fetch(`/api/lists/${id}`)
-      .then(res => res.json())
-      .then(data => setName(data.name));
+    const stored = localStorage.getItem(`list:${id}`);
+    if (stored) {
+      const list = JSON.parse(stored);
+      setName(list.name);
+      setTodos(list.todos || []);
+    }
   }, [id]);
 
   async function addTodo() {
     if (!title.trim()) return;
-    const res = await fetch('/api/todos', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ listId: id, title }),
-    });
-    const { id: todoId } = await res.json();
-    setTodos(t => [...t, { id: todoId, title, completed: false }]);
+    const todoId = crypto.randomUUID();
+    const newTodo = { id: todoId, title, completed: false };
+    const stored = localStorage.getItem(`list:${id}`);
+    const list = stored ? JSON.parse(stored) : { id, name, todos: [] };
+    list.todos.push(newTodo);
+    localStorage.setItem(`list:${id}`, JSON.stringify(list));
+    setTodos(t => [...t, newTodo]);
     setTitle('');
   }
 
   async function toggleTodo(todo: Todo, completed: boolean) {
-    await fetch(`/api/todos/${todo.id}`, {
-      method: 'PATCH',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ completed }),
-    });
-    setTodos(t => t.map(td => (td.id === todo.id ? { ...td, completed } : td)));
+    const stored = localStorage.getItem(`list:${id}`);
+    if (!stored) return;
+    const list = JSON.parse(stored);
+    list.todos = list.todos.map((td: Todo) =>
+      td.id === todo.id ? { ...td, completed } : td
+    );
+    localStorage.setItem(`list:${id}`, JSON.stringify(list));
+    setTodos(list.todos);
   }
 
   return (
