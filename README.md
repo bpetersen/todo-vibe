@@ -19,6 +19,12 @@ Domain events are documented in [EVENTS.md](EVENTS.md).
    npm test
    ```
 
+3. Run database migrations:
+
+   ```sh
+   npm run migrate
+   ```
+
 Once you're set up, use TDD to drive new features and model behavior with events.
 
 ## API
@@ -38,4 +44,10 @@ Start the API with a Postgres database:
 
 ```sh
 docker compose up
+```
+
+Run database migrations inside the container:
+
+```sh
+docker compose run api npm run migrate
 ```

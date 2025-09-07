@@ -1,0 +1,3 @@
+CREATE TABLE lists (
+  id UUID PRIMARY KEY
+);
