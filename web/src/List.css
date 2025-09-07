@@ -17,3 +17,8 @@
   border: 1px solid #ccc;
   border-radius: 4px;
 }
+
+.list li.completed {
+  text-decoration: line-through;
+  color: #888;
+}

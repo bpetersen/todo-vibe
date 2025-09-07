@@ -13,3 +13,16 @@ Emitted when a todo is created.
 ### Notes
 
 - `title` must be non-empty; `CreateTodo` throws an error if the title is blank.
+
+## TodoCompleted
+
+Emitted when a todo is marked as completed.
+
+### Data
+
+- `todoId`: string
+- `completedAt`: Date
+
+### Notes
+
+- Currently no guard against double completion.

@@ -7,4 +7,12 @@ export interface TodoCreated {
   };
 }
 
-export type TodoEvent = TodoCreated;
+export interface TodoCompleted {
+  type: 'TodoCompleted';
+  data: {
+    todoId: string;
+    completedAt: Date;
+  };
+}
+
+export type TodoEvent = TodoCreated | TodoCompleted;
