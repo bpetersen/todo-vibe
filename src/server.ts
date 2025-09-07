@@ -3,6 +3,7 @@ import { randomUUID } from 'node:crypto';
 import { fileURLToPath } from 'node:url';
 import { Pool } from 'pg';
 import { CreateTodo } from './domain/todo/CreateTodo';
+import { CompleteTodo } from './domain/todo/CompleteTodo';
 
 export function createApp(db: Pool = new Pool({ connectionString: process.env.DATABASE_URL })) {
   return http.createServer(async (req, res) => {
@@ -25,7 +26,7 @@ export function createApp(db: Pool = new Pool({ connectionString: process.env.DA
       const createdAt = new Date();
       CreateTodo({ todoId: id, title, createdAt });
       await db.query(
-        'INSERT INTO todos(id, list_id, title, created_at) VALUES($1, $2, $3, $4)',
+        'INSERT INTO todos(id, list_id, title, created_at, completed) VALUES($1, $2, $3, $4, false)',
         [id, listId, title, createdAt]
       );
       res.writeHead(201, { 'Content-Type': 'application/json' });
@@ -37,7 +38,7 @@ export function createApp(db: Pool = new Pool({ connectionString: process.env.DA
     if (req.method === 'GET' && todoMatch) {
       const id = todoMatch[1];
       const { rows } = await db.query(
-        'SELECT id, list_id, title FROM todos WHERE id = $1',
+        'SELECT id, list_id, title, completed FROM todos WHERE id = $1',
         [id]
       );
       if (rows.length === 0) {
@@ -48,8 +49,22 @@ export function createApp(db: Pool = new Pool({ connectionString: process.env.DA
       res.writeHead(200, { 'Content-Type': 'application/json' });
       const row = rows[0];
       res.end(
-        JSON.stringify({ id: row.id, title: row.title, listId: row.list_id })
+        JSON.stringify({ id: row.id, title: row.title, listId: row.list_id, completed: row.completed })
       );
+      return;
+    }
+
+    if (req.method === 'PATCH' && todoMatch) {
+      const id = todoMatch[1];
+      let body = '';
+      for await (const chunk of req) body += chunk;
+      const { completed } = JSON.parse(body);
+      if (completed) {
+        CompleteTodo({ todoId: id, completedAt: new Date() });
+      }
+      await db.query('UPDATE todos SET completed = $1 WHERE id = $2', [completed, id]);
+      res.statusCode = 204;
+      res.end();
       return;
     }
 

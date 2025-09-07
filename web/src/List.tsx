@@ -4,6 +4,7 @@ import './List.css';
 interface Todo {
   id: string;
   title: string;
+  completed: boolean;
 }
 
 export default function List() {
@@ -26,8 +27,17 @@ export default function List() {
       body: JSON.stringify({ listId: id, title }),
     });
     const { id: todoId } = await res.json();
-    setTodos(t => [...t, { id: todoId, title }]);
+    setTodos(t => [...t, { id: todoId, title, completed: false }]);
     setTitle('');
+  }
+
+  async function toggleTodo(todo: Todo, completed: boolean) {
+    await fetch(`/api/todos/${todo.id}`, {
+      method: 'PATCH',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ completed }),
+    });
+    setTodos(t => t.map(td => (td.id === todo.id ? { ...td, completed } : td)));
   }
 
   return (
@@ -43,7 +53,16 @@ export default function List() {
       />
       <ul>
         {todos.map(todo => (
-          <li key={todo.id}>{todo.title}</li>
+          <li key={todo.id} className={todo.completed ? 'completed' : ''}>
+            <label>
+              <input
+                type="checkbox"
+                checked={todo.completed}
+                onChange={e => toggleTodo(todo, e.target.checked)}
+              />
+              {todo.title}
+            </label>
+          </li>
         ))}
       </ul>
     </main>

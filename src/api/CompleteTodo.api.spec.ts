@@ -39,7 +39,7 @@ afterAll(async () => {
   server.close();
 });
 
-test('POST /api/todos accepts a title and listId and stores it', async () => {
+test('PATCH /api/todos/:id sets completed to true', async () => {
   const listRes = await fetch(`${url}/api/lists`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
@@ -47,19 +47,25 @@ test('POST /api/todos accepts a title and listId and stores it', async () => {
   });
   const { id: listId } = await listRes.json();
 
-  const res = await fetch(`${url}/api/todos`, {
+  const createRes = await fetch(`${url}/api/todos`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({ listId, title: 'Buy milk' }),
   });
-  expect(res.status).toBe(201);
-  const body = await res.json();
-  expect(body).toMatchObject({ id: expect.any(String) });
-  const saved = await db.query('SELECT id, title, list_id, completed FROM todos WHERE id = $1', [body.id]);
-  expect(saved.rows[0]).toMatchObject({ id: body.id, title: 'Buy milk', list_id: listId, completed: false });
+  const { id: todoId } = await createRes.json();
 
-  const getRes = await fetch(`${url}/api/todos/${body.id}`);
-  expect(getRes.status).toBe(200);
+  const getRes = await fetch(`${url}/api/todos/${todoId}`);
   const todo = await getRes.json();
-  expect(todo).toEqual({ id: body.id, title: 'Buy milk', listId, completed: false });
+  expect(todo.completed).toBe(false);
+
+  const patchRes = await fetch(`${url}/api/todos/${todoId}`, {
+    method: 'PATCH',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ completed: true }),
+  });
+  expect(patchRes.status).toBe(204);
+
+  const getRes2 = await fetch(`${url}/api/todos/${todoId}`);
+  const todo2 = await getRes2.json();
+  expect(todo2.completed).toBe(true);
 });
