@@ -5,25 +5,21 @@
   "scripts": {
     "test:domain": "tsx src/domain/todo/*.spec.ts",
     "test:web": "vitest run",
-    "test:api": "vitest run -c api.vitest.config.ts",
-    "test": "npm run test:domain && npm run test:api && npm run test:web",
+    "test": "npm run test:domain && npm run test:web",
     "dev": "vite",
     "migrate": "tsx src/migrate.ts"
   },
   "dependencies": {
-    "pg": "^8.11.3",
     "react": "^18.2.0",
     "react-dom": "^18.2.0"
   },
   "devDependencies": {
     "@testing-library/jest-dom": "^6.4.2",
     "@testing-library/react": "^14.1.2",
-    "@types/pg": "^8.15.5",
     "@types/react": "^18.2.14",
     "@types/react-dom": "^18.2.7",
     "@vitejs/plugin-react": "^4.2.1",
     "jsdom": "^24.0.0",
-    "testcontainers": "^11.5.1",
     "tsx": "^4.20.5",
     "typescript": "^5.3.3",
     "vite": "^5.0.10",

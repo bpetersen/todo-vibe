@@ -3,12 +3,9 @@ import './App.css';
 export default function App() {
   async function createList() {
     const name = window.prompt('List name?') ?? 'New List';
-    const response = await fetch('/api/lists', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ name }),
-    });
-    const { id } = await response.json();
+    const id = crypto.randomUUID();
+    const list = { id, name, todos: [] };
+    localStorage.setItem(`list:${id}`, JSON.stringify(list));
     window.location.assign(`/lists/${id}`);
   }
 

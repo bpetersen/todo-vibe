@@ -14,22 +14,22 @@ test('renders intro layout', () => {
   ).toHaveClass('start-button');
 });
 
-const originalFetch = global.fetch;
 const originalLocation = window.location;
 const originalPrompt = window.prompt;
+const originalUUID = global.crypto.randomUUID;
 
 afterEach(() => {
-  global.fetch = originalFetch;
   Object.defineProperty(window, 'location', { value: originalLocation });
   window.prompt = originalPrompt;
+  global.crypto.randomUUID = originalUUID;
+  localStorage.clear();
+  vi.restoreAllMocks();
 });
 
-test('posts to create a new list with a name', async () => {
-  const fetchMock = vi.fn().mockResolvedValue({
-    json: () => Promise.resolve({ id: 'abc123' }),
-  } as any);
-  // @ts-expect-error: allow test-time override
-  global.fetch = fetchMock;
+test('stores a new list in local storage with a name', async () => {
+  const uuidMock = vi
+    .spyOn(global.crypto, 'randomUUID')
+    .mockReturnValue('abc123');
 
   const promptMock = vi.fn().mockReturnValue('Groceries');
   window.prompt = promptMock as any;
@@ -46,11 +46,9 @@ test('posts to create a new list with a name', async () => {
 
   await waitFor(() => {
     expect(promptMock).toHaveBeenCalled();
-    expect(fetchMock).toHaveBeenCalledWith('/api/lists', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ name: 'Groceries' }),
-    });
+    expect(uuidMock).toHaveBeenCalled();
     expect(assignMock).toHaveBeenCalledWith('/lists/abc123');
+    const saved = JSON.parse(localStorage.getItem('list:abc123')!);
+    expect(saved).toEqual({ id: 'abc123', name: 'Groceries', todos: [] });
   });
 });
