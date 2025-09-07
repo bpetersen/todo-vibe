@@ -3,6 +3,7 @@
 A clean, event-driven Todo application built with test-driven development (TDD). Commands trigger state changes and publish domain events.
 
 See [AGENTS.md](AGENTS.md) for collaboration guidelines and event-driven/TDD conventions.
+Domain events are documented in [EVENTS.md](EVENTS.md).
 
 ## Getting Started
 
