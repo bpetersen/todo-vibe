@@ -1,0 +1,11 @@
+{
+  "name": "todo-vibe",
+  "version": "0.0.0",
+  "type": "module",
+  "scripts": {
+    "test": "tsx src/domain/todo/CreateTodo.spec.ts"
+  },
+  "devDependencies": {
+    "tsx": "^4.7.0"
+  }
+}
