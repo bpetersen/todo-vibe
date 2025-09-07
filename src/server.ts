@@ -54,19 +54,19 @@ export function createApp(db: Pool = new Pool({ connectionString: process.env.DA
       return;
     }
 
-    if (req.method === 'PATCH' && todoMatch) {
-      const id = todoMatch[1];
-      let body = '';
-      for await (const chunk of req) body += chunk;
-      const { completed } = JSON.parse(body);
-      if (completed) {
-        CompleteTodo({ todoId: id, completedAt: new Date() });
+      if (req.method === 'PATCH' && todoMatch) {
+        const id = todoMatch[1];
+        let body = '';
+        for await (const chunk of req) body += chunk;
+        const { completed } = JSON.parse(body);
+        if (completed) {
+          CompleteTodo({ todoId: id, completedAt: new Date(), history: [] });
+        }
+        await db.query('UPDATE todos SET completed = $1 WHERE id = $2', [completed, id]);
+        res.statusCode = 204;
+        res.end();
+        return;
       }
-      await db.query('UPDATE todos SET completed = $1 WHERE id = $2', [completed, id]);
-      res.statusCode = 204;
-      res.end();
-      return;
-    }
 
     const match = req.url?.match(/^\/api\/lists\/([\w-]+)$/);
     if (req.method === 'GET' && match) {

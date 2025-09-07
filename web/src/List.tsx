@@ -45,15 +45,19 @@ export default function List() {
     if (!stored) return;
     const list = JSON.parse(stored);
     list.todos = list.todos.map((td: Todo) => {
-      if (td.id !== todo.id) return td;
-      const events = td.events || [];
-      if (completed) {
-        const newEvents = CompleteTodo({ todoId: td.id, completedAt: new Date() });
-        return { ...td, completed: true, events: [...events, ...newEvents] };
-      } else {
-        const newEvents = ReopenTodo({ todoId: td.id, reopenedAt: new Date(), history: events });
-        return { ...td, completed: false, events: [...events, ...newEvents] };
-      }
+        if (td.id !== todo.id) return td;
+        const events = td.events || [];
+        if (completed) {
+          const newEvents = CompleteTodo({
+            todoId: td.id,
+            completedAt: new Date(),
+            history: events,
+          });
+          return { ...td, completed: true, events: [...events, ...newEvents] };
+        } else {
+          const newEvents = ReopenTodo({ todoId: td.id, reopenedAt: new Date(), history: events });
+          return { ...td, completed: false, events: [...events, ...newEvents] };
+        }
     });
     localStorage.setItem(`list:${id}`, JSON.stringify(list));
     setTodos(list.todos);
