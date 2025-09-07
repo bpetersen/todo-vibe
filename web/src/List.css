@@ -1,0 +1,19 @@
+.list {
+  min-height: 100vh;
+  padding: 2rem;
+  font-family: system-ui, sans-serif;
+  background: #fff;
+  color: #333;
+}
+
+.list h1 {
+  margin-bottom: 1rem;
+}
+
+.list input {
+  width: 100%;
+  padding: 0.5rem;
+  margin-bottom: 1rem;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+}

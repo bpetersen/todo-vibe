@@ -38,5 +38,6 @@ test('posts to create a new list', async () => {
 
   await waitFor(() => {
     expect(fetchMock).toHaveBeenCalledWith('/api/lists', { method: 'POST' });
+    expect(assignMock).toHaveBeenCalledWith('/lists/abc123');
   });
 });
