@@ -1,5 +1,6 @@
 import http from 'node:http';
 import { randomUUID } from 'node:crypto';
+import { fileURLToPath } from 'node:url';
 import { Pool } from 'pg';
 
 export function createApp(db: Pool = new Pool({ connectionString: process.env.DATABASE_URL })) {
@@ -16,7 +17,7 @@ export function createApp(db: Pool = new Pool({ connectionString: process.env.DA
   });
 }
 
-if (import.meta.main) {
+if (process.argv[1] === fileURLToPath(import.meta.url)) {
   const port = process.env.PORT || 3000;
   createApp().listen(port, () => {
     console.log(`API listening on http://localhost:${port}`);
