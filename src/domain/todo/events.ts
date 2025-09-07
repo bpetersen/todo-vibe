@@ -15,4 +15,12 @@ export interface TodoCompleted {
   };
 }
 
-export type TodoEvent = TodoCreated | TodoCompleted;
+export interface TodoReopened {
+  type: 'TodoReopened';
+  data: {
+    todoId: string;
+    reopenedAt: Date;
+  };
+}
+
+export type TodoEvent = TodoCreated | TodoCompleted | TodoReopened;

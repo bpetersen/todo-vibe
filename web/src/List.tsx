@@ -1,10 +1,15 @@
 import { useEffect, useState } from 'react';
 import './List.css';
+import { CreateTodo } from '../../src/domain/todo/CreateTodo';
+import { CompleteTodo } from '../../src/domain/todo/CompleteTodo';
+import { ReopenTodo } from '../../src/domain/todo/ReopenTodo';
+import type { TodoEvent } from '../../src/domain/todo/events';
 
 interface Todo {
   id: string;
   title: string;
   completed: boolean;
+  events: TodoEvent[];
 }
 
 export default function List() {
@@ -18,14 +23,15 @@ export default function List() {
     if (stored) {
       const list = JSON.parse(stored);
       setName(list.name);
-      setTodos(list.todos || []);
+      setTodos((list.todos || []).map((t: Todo) => ({ ...t, events: t.events || [] })));
     }
   }, [id]);
 
   async function addTodo() {
     if (!title.trim()) return;
     const todoId = crypto.randomUUID();
-    const newTodo = { id: todoId, title, completed: false };
+    const events = CreateTodo({ todoId, title, createdAt: new Date() });
+    const newTodo: Todo = { id: todoId, title, completed: false, events };
     const stored = localStorage.getItem(`list:${id}`);
     const list = stored ? JSON.parse(stored) : { id, name, todos: [] };
     list.todos.push(newTodo);
@@ -38,9 +44,21 @@ export default function List() {
     const stored = localStorage.getItem(`list:${id}`);
     if (!stored) return;
     const list = JSON.parse(stored);
-    list.todos = list.todos.map((td: Todo) =>
-      td.id === todo.id ? { ...td, completed } : td
-    );
+    list.todos = list.todos.map((td: Todo) => {
+        if (td.id !== todo.id) return td;
+        const events = td.events || [];
+        if (completed) {
+          const newEvents = CompleteTodo({
+            todoId: td.id,
+            completedAt: new Date(),
+            history: events,
+          });
+          return { ...td, completed: true, events: [...events, ...newEvents] };
+        } else {
+          const newEvents = ReopenTodo({ todoId: td.id, reopenedAt: new Date(), history: events });
+          return { ...td, completed: false, events: [...events, ...newEvents] };
+        }
+    });
     localStorage.setItem(`list:${id}`, JSON.stringify(list));
     setTodos(list.todos);
   }
