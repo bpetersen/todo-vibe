@@ -51,9 +51,10 @@ test('adds a new todo and displays it', async () => {
 
   await waitFor(() => {
     const saved = JSON.parse(localStorage.getItem('list:abc123')!);
-    expect(saved.todos).toEqual([
-      { id: 'todo123', title: 'Buy milk', completed: false },
-    ]);
+    expect(saved.todos[0].id).toBe('todo123');
+    expect(saved.todos[0].title).toBe('Buy milk');
+    expect(saved.todos[0].completed).toBe(false);
+    expect(saved.todos[0].events[0].type).toBe('TodoCreated');
     expect(uuidMock).toHaveBeenCalled();
   });
   const label = await screen.findByText('Buy milk');
@@ -67,7 +68,7 @@ test('checks off a todo and persists completion', async () => {
     JSON.stringify({
       id: 'abc123',
       name: 'Groceries',
-      todos: [{ id: 'todo123', title: 'Buy milk', completed: false }],
+      todos: [{ id: 'todo123', title: 'Buy milk', completed: false, events: [] }],
     })
   );
 
@@ -84,6 +85,7 @@ test('checks off a todo and persists completion', async () => {
   await waitFor(() => {
     const saved = JSON.parse(localStorage.getItem('list:abc123')!);
     expect(saved.todos[0].completed).toBe(true);
+    expect(saved.todos[0].events[0].type).toBe('TodoCompleted');
   });
 
   expect(checkbox).toBeChecked();
