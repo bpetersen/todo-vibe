@@ -5,8 +5,12 @@ const todoId = '1';
 const title = 'Test';
 const createdAt = new Date('2023-01-01T00:00:00Z');
 
-const result = CreateTodo({ todoId, title, createdAt });
+{
+  const result = CreateTodo({ todoId, title, createdAt });
 
-assert.deepStrictEqual(result, [
-  { type: 'TodoCreated', data: { todoId, title, createdAt } }
-]);
+  assert.deepStrictEqual(result, [
+    { type: 'TodoCreated', data: { todoId, title, createdAt } }
+  ]);
+}
+
+assert.throws(() => CreateTodo({ todoId, title: '', createdAt }), /title/i);
