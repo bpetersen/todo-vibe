@@ -20,3 +20,14 @@ Domain events are documented in [EVENTS.md](EVENTS.md).
    ```
 
 Once you're set up, use TDD to drive new features and model behavior with events.
+
+## API
+
+### `POST /api/lists`
+
+Creates a new list and responds with its identifier.
+
+```sh
+curl -X POST http://localhost:3000/api/lists
+# => { "id": "abc123" }
+```

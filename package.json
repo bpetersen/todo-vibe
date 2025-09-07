@@ -5,7 +5,8 @@
   "scripts": {
     "test:domain": "tsx src/domain/todo/CreateTodo.spec.ts",
     "test:web": "vitest run",
-    "test": "npm run test:domain && npm run test:web",
+    "test:api": "vitest run -c api.vitest.config.ts",
+    "test": "npm run test:domain && npm run test:api && npm run test:web",
     "dev": "vite"
   },
   "dependencies": {
