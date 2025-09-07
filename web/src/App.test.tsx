@@ -1,7 +1,7 @@
 import { render, screen, fireEvent, waitFor } from '@testing-library/react';
 import '@testing-library/jest-dom';
 import App from './App';
-import { vi } from 'vitest';
+import { vi, afterEach } from 'vitest';
 
 test('renders intro layout', () => {
   render(<App />);
@@ -9,6 +9,14 @@ test('renders intro layout', () => {
   expect(
     screen.getByText(/organize your tasks with style/i)
   ).toBeInTheDocument();
+});
+
+const originalFetch = global.fetch;
+const originalLocation = window.location;
+
+afterEach(() => {
+  global.fetch = originalFetch;
+  Object.defineProperty(window, 'location', { value: originalLocation });
 });
 
 test('posts to create a new list', async () => {

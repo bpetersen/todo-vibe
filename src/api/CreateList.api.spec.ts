@@ -1,25 +1,40 @@
 import { beforeAll, afterAll, expect, test } from 'vitest';
 import type { Server } from 'node:http';
-import { Pool } from 'pg';
 import { createApp } from '../server';
+import { GenericContainer, type StartedTestContainer } from 'testcontainers';
+import { Pool } from 'pg';
 
 let server: Server;
 let url: string;
 let db: Pool;
+let pg: StartedTestContainer;
 
 beforeAll(async () => {
-  db = new Pool({ connectionString: process.env.DATABASE_URL });
-  await db.query('DROP TABLE IF EXISTS lists');
+  pg = await new GenericContainer('postgres:16-alpine')
+    .withEnvironment({
+      POSTGRES_USER: 'postgres',
+      POSTGRES_PASSWORD: 'postgres',
+      POSTGRES_DB: 'todos',
+    })
+    .withExposedPorts(5432)
+    .start();
+
+  const host = pg.getHost();
+  const port = pg.getMappedPort(5432);
+  db = new Pool({
+    connectionString: `postgres://postgres:postgres@${host}:${port}/todos`,
+  });
   await db.query('CREATE TABLE lists (id uuid primary key)');
 
   server = createApp(db);
   await new Promise(resolve => server.listen(0, resolve));
-  const { port } = server.address() as any;
-  url = `http://localhost:${port}`;
+  const { port: serverPort } = server.address() as any;
+  url = `http://localhost:${serverPort}`;
 });
 
 afterAll(async () => {
   await db.end();
+  await pg.stop();
   server.close();
 });
 
