@@ -39,3 +39,17 @@ Emitted when a completed todo is reopened.
 ### Notes
 
 - Only allowed if the todo was previously completed and not already reopened.
+
+## TodoReordered
+
+Emitted when a todo is moved to a new position within its list.
+
+### Data
+
+- `todoId`: string
+- `fromIndex`: number
+- `toIndex`: number
+
+### Notes
+
+- No event is emitted if the todo stays in the same position.
