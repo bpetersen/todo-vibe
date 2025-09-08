@@ -3,6 +3,7 @@ import './List.css';
 import { CreateTodo } from '../../src/domain/todo/CreateTodo';
 import { CompleteTodo } from '../../src/domain/todo/CompleteTodo';
 import { ReopenTodo } from '../../src/domain/todo/ReopenTodo';
+import { ReorderTodo } from '../../src/domain/todo/ReorderTodo';
 import type { TodoEvent } from '../../src/domain/todo/events';
 
 interface Todo {
@@ -15,6 +16,7 @@ interface Todo {
 export default function List() {
   const [name, setName] = useState('New List');
   const [todos, setTodos] = useState<Todo[]>([]);
+  const [dragIndex, setDragIndex] = useState<number | null>(null);
   const [title, setTitle] = useState('');
   const id = window.location.pathname.split('/').pop();
 
@@ -63,6 +65,31 @@ export default function List() {
     setTodos(list.todos);
   }
 
+  function handleDrop(toIndex: number) {
+    if (dragIndex === null) return;
+    const history: TodoEvent[] = todos.map(t => ({
+      type: 'TodoCreated',
+      data: { todoId: t.id, title: t.title, createdAt: new Date() },
+    }));
+    const events = ReorderTodo({
+      todoId: todos[dragIndex].id,
+      toIndex,
+      history,
+    });
+    if (events.length === 0) {
+      setDragIndex(null);
+      return;
+    }
+    const updated = [...todos];
+    const [moved] = updated.splice(dragIndex, 1);
+    const movedWithEvents = { ...moved, events: [...(moved.events || []), ...events] };
+    updated.splice(toIndex, 0, movedWithEvents);
+    const stored = { id, name, todos: updated };
+    localStorage.setItem(`list:${id}`, JSON.stringify(stored));
+    setTodos(updated);
+    setDragIndex(null);
+  }
+
   return (
     <main className="list">
       <h1>{name}</h1>
@@ -76,10 +103,14 @@ export default function List() {
         }}
       />
       <ul>
-        {todos.map(todo => (
+        {todos.map((todo, i) => (
           <li
             key={todo.id}
             className={`todo-item${todo.completed ? ' completed' : ''}`}
+            draggable
+            onDragStart={() => setDragIndex(i)}
+            onDragOver={e => e.preventDefault()}
+            onDrop={() => handleDrop(i)}
           >
             <label>
               <input

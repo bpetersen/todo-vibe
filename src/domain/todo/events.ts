@@ -23,4 +23,17 @@ export interface TodoReopened {
   };
 }
 
-export type TodoEvent = TodoCreated | TodoCompleted | TodoReopened;
+export interface TodoReordered {
+  type: 'TodoReordered';
+  data: {
+    todoId: string;
+    fromIndex: number;
+    toIndex: number;
+  };
+}
+
+export type TodoEvent =
+  | TodoCreated
+  | TodoCompleted
+  | TodoReopened
+  | TodoReordered;

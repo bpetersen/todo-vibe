@@ -90,3 +90,52 @@ test('checks off a todo and persists completion', async () => {
 
   expect(checkbox).toBeChecked();
 });
+
+test('reorders todos via drag and drop', async () => {
+  localStorage.setItem(
+    'list:abc123',
+    JSON.stringify({
+      id: 'abc123',
+      name: 'Groceries',
+      todos: [
+        { id: 'todo1', title: 'A', completed: false, events: [] },
+        { id: 'todo2', title: 'B', completed: false, events: [] },
+      ],
+    })
+  );
+
+  Object.defineProperty(window, 'location', {
+    value: { ...window.location, pathname: '/lists/abc123' },
+    writable: true,
+  });
+
+  render(<List />);
+
+  const first = await screen.findByText('A');
+  const second = await screen.findByText('B');
+  const firstLi = first.closest('li')!;
+  const secondLi = second.closest('li')!;
+  const data: DataTransfer = {
+    dropEffect: 'none',
+    effectAllowed: 'all',
+    files: [],
+    items: [] as any,
+    types: [],
+    setData: () => {},
+    getData: () => '',
+    clearData: () => {},
+    setDragImage: () => {},
+  };
+  fireEvent.dragStart(secondLi, { dataTransfer: data });
+  fireEvent.dragOver(firstLi, { dataTransfer: data });
+  fireEvent.drop(firstLi, { dataTransfer: data });
+
+  await waitFor(() => {
+    const saved = JSON.parse(localStorage.getItem('list:abc123')!);
+    expect(saved.todos[0].id).toBe('todo2');
+    expect(saved.todos[0].events[0].type).toBe('TodoReordered');
+  });
+
+  const items = screen.getAllByRole('listitem');
+  expect(items[0]).toHaveTextContent('B');
+});
