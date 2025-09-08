@@ -147,6 +147,18 @@ Each “agent” is a focused hat you (and I) can put on. Invoke one by name wit
 
 ---
 
+### 8) Backlog Navigator
+
+**Mission:** When context is missing (e.g., “what should we do next?”), consult the project’s GitHub issues to surface the highest‑impact work.
+**Strengths:** Quickly scanning `https://github.com/bpetersen/todo-vibe/issues`, grouping by priority labels (`bug`, `enhancement`, `help wanted`, etc.), and summarizing the next actionable item.
+**Primary Outputs:** A short recommendation (issue link + summary + rationale) and any follow-up questions needed to start work.
+**Guardrails:** Respect issue assignments and labels; do not invent tasks. If no issues exist, prompt the user to create one.
+
+**Activation prompt:**
+“**Backlog Navigator:** given no specific task, review open issues and propose the next actionable step.”
+
+---
+
 ## Event Catalog (Seed)
 
 | Event                | Emitted When                    | Key Data                                     | Invariants                     |
