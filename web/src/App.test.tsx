@@ -63,7 +63,13 @@ test('stores a new list in local storage with a name', async () => {
     expect(uuidMock).toHaveBeenCalled();
     expect(assignMock).toHaveBeenCalledWith('/lists/abc123');
     const saved = JSON.parse(localStorage.getItem('list:abc123')!);
-    expect(saved).toEqual({ id: 'abc123', name: 'Groceries', todos: [] });
+    expect(saved).toMatchObject({
+      id: 'abc123',
+      name: 'Groceries',
+      todos: [],
+      archived: false,
+    });
+    expect(saved.createdAt).toBeDefined();
   });
 });
 

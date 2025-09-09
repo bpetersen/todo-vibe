@@ -7,7 +7,13 @@ export default function App() {
   async function createList() {
     const name = window.prompt('List name?') ?? 'New List';
     const id = crypto.randomUUID();
-    const list = { id, name, todos: [] };
+    const list = {
+      id,
+      name,
+      todos: [],
+      createdAt: new Date().toISOString(),
+      archived: false,
+    };
     localStorage.setItem(`list:${id}`, JSON.stringify(list));
     window.location.assign(`/lists/${id}`);
   }

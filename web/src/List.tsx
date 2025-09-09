@@ -37,7 +37,9 @@ export default function List() {
     const events = CreateTodo({ todoId, title, createdAt: new Date() });
     const newTodo: Todo = { id: todoId, title, completed: false, events };
     const stored = localStorage.getItem(`list:${id}`);
-    const list = stored ? JSON.parse(stored) : { id, name, todos: [] };
+    const list = stored
+      ? JSON.parse(stored)
+      : { id, name, todos: [], createdAt: new Date().toISOString(), archived: false };
     list.todos.push(newTodo);
     localStorage.setItem(`list:${id}`, JSON.stringify(list));
     setTodos(t => [...t, newTodo]);
@@ -94,7 +96,9 @@ export default function List() {
       ...updated[dragIndex],
       events: [...(updated[dragIndex].events || []), ...events],
     };
-    const stored = { id, name, todos: updated };
+    const existing = localStorage.getItem(`list:${id}`);
+    const base = existing ? JSON.parse(existing) : {};
+    const stored = { ...base, id, name, todos: updated };
     localStorage.setItem(`list:${id}`, JSON.stringify(stored));
     setTodos(updated);
     setDragIndex(null);
