@@ -7,7 +7,13 @@ export default function App() {
   async function createList() {
     const name = window.prompt('List name?') ?? 'New List';
     const id = crypto.randomUUID();
-    const list = { id, name, todos: [] };
+    const list = {
+      id,
+      name,
+      todos: [],
+      createdAt: new Date().toISOString(),
+      archived: false,
+    };
     localStorage.setItem(`list:${id}`, JSON.stringify(list));
     window.location.assign(`/lists/${id}`);
   }
@@ -50,9 +56,17 @@ export default function App() {
       )}
       <h1>Todo Vibe</h1>
       <p className="tagline">Organize your tasks with style</p>
-      <button className="start-button" onClick={createList}>
-        Start a new list
-      </button>
+      <div className="split-button">
+        <button className="split-button-half" onClick={createList}>
+          New
+        </button>
+        <button
+          className="split-button-half"
+          onClick={() => window.location.assign('/lists')}
+        >
+          Continue
+        </button>
+      </div>
       <FeedbackFooter />
     </main>
   );

@@ -9,9 +9,22 @@ test('renders intro layout', () => {
   expect(
     screen.getByText(/organize your tasks with style/i)
   ).toBeInTheDocument();
-  expect(
-    screen.getByRole('button', { name: /start a new list/i })
-  ).toHaveClass('start-button');
+  const newButton = screen.getByRole('button', { name: /new/i });
+  const continueButton = screen.getByRole('button', { name: /continue/i });
+  expect(newButton).toHaveClass('split-button-half');
+  expect(continueButton).toHaveClass('split-button-half');
+});
+
+test('continue button navigates to list manager', () => {
+  const assignMock = vi.fn();
+  Object.defineProperty(window, 'location', {
+    value: { ...window.location, assign: assignMock },
+    writable: true,
+  });
+  render(<App />);
+  const button = screen.getByRole('button', { name: /continue/i });
+  fireEvent.click(button);
+  expect(assignMock).toHaveBeenCalledWith('/lists');
 });
 
 test('invites feedback link', () => {
@@ -55,7 +68,7 @@ test('stores a new list in local storage with a name', async () => {
   });
 
   render(<App />);
-  const button = screen.getByRole('button', { name: /start a new list/i });
+  const button = screen.getByRole('button', { name: /new/i });
   fireEvent.click(button);
 
   await waitFor(() => {
@@ -63,7 +76,13 @@ test('stores a new list in local storage with a name', async () => {
     expect(uuidMock).toHaveBeenCalled();
     expect(assignMock).toHaveBeenCalledWith('/lists/abc123');
     const saved = JSON.parse(localStorage.getItem('list:abc123')!);
-    expect(saved).toEqual({ id: 'abc123', name: 'Groceries', todos: [] });
+    expect(saved).toMatchObject({
+      id: 'abc123',
+      name: 'Groceries',
+      todos: [],
+      archived: false,
+    });
+    expect(saved.createdAt).toBeDefined();
   });
 });
 
