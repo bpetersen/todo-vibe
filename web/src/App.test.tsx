@@ -17,11 +17,13 @@ test('renders intro layout', () => {
 const originalLocation = window.location;
 const originalPrompt = window.prompt;
 const originalUUID = global.crypto.randomUUID;
+const originalBlob = global.Blob;
 
 afterEach(() => {
   Object.defineProperty(window, 'location', { value: originalLocation });
   window.prompt = originalPrompt;
   global.crypto.randomUUID = originalUUID;
+  global.Blob = originalBlob;
   localStorage.clear();
   vi.restoreAllMocks();
 });
@@ -50,5 +52,42 @@ test('stores a new list in local storage with a name', async () => {
     expect(assignMock).toHaveBeenCalledWith('/lists/abc123');
     const saved = JSON.parse(localStorage.getItem('list:abc123')!);
     expect(saved).toEqual({ id: 'abc123', name: 'Groceries', todos: [] });
+  });
+});
+
+test('downloads all lists as a json file', async () => {
+  localStorage.setItem(
+    'list:l1',
+    JSON.stringify({ id: 'l1', name: 'Groceries', todos: [] })
+  );
+  localStorage.setItem(
+    'list:l2',
+    JSON.stringify({ id: 'l2', name: 'Chores', todos: [] })
+  );
+
+  let blobContent = '';
+  global.Blob = class {
+    constructor(parts: any[]) {
+      blobContent = String(parts[0]);
+    }
+  } as any;
+
+  const urlSpy = vi.fn().mockReturnValue('blob:mock');
+  global.URL.createObjectURL = urlSpy;
+  global.URL.revokeObjectURL = vi.fn();
+  const clickMock = vi
+    .spyOn(HTMLAnchorElement.prototype, 'click')
+    .mockImplementation(() => {});
+
+  render(<App />);
+  fireEvent.click(screen.getByRole('button', { name: /download state/i }));
+
+  await waitFor(() => {
+    expect(urlSpy).toHaveBeenCalled();
+    expect(JSON.parse(blobContent)).toEqual([
+      { id: 'l1', name: 'Groceries', todos: [] },
+      { id: 'l2', name: 'Chores', todos: [] },
+    ]);
+    expect(clickMock).toHaveBeenCalled();
   });
 });
