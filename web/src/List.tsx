@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useRef } from 'react';
 import './List.css';
 import { CreateTodo } from '../../src/domain/todo/CreateTodo';
 import { CompleteTodo } from '../../src/domain/todo/CompleteTodo';
@@ -18,6 +18,7 @@ export default function List() {
   const [todos, setTodos] = useState<Todo[]>([]);
   const [dragIndex, setDragIndex] = useState<number | null>(null);
   const [title, setTitle] = useState('');
+  const originalOrder = useRef<Todo[]>([]);
   const id = window.location.pathname.split('/').pop();
 
   useEffect(() => {
@@ -65,29 +66,38 @@ export default function List() {
     setTodos(list.todos);
   }
 
-  function handleDrop(toIndex: number) {
+  function handleDragOver(toIndex: number) {
+    if (dragIndex === null || dragIndex === toIndex) return;
+    const updated = [...todos];
+    const [moved] = updated.splice(dragIndex, 1);
+    updated.splice(toIndex, 0, moved);
+    setTodos(updated);
+    setDragIndex(toIndex);
+  }
+
+  function handleDrop() {
     if (dragIndex === null) return;
-    const history: TodoEvent[] = todos.map(t => ({
+    const history: TodoEvent[] = originalOrder.current.map(t => ({
       type: 'TodoCreated',
       data: { todoId: t.id, title: t.title, createdAt: new Date() },
     }));
-    const events = ReorderTodo({
-      todoId: todos[dragIndex].id,
-      toIndex,
-      history,
-    });
+    const events = ReorderTodo({ todoId: todos[dragIndex].id, toIndex: dragIndex, history });
     if (events.length === 0) {
+      setTodos(originalOrder.current);
       setDragIndex(null);
+      originalOrder.current = [];
       return;
     }
     const updated = [...todos];
-    const [moved] = updated.splice(dragIndex, 1);
-    const movedWithEvents = { ...moved, events: [...(moved.events || []), ...events] };
-    updated.splice(toIndex, 0, movedWithEvents);
+    updated[dragIndex] = {
+      ...updated[dragIndex],
+      events: [...(updated[dragIndex].events || []), ...events],
+    };
     const stored = { id, name, todos: updated };
     localStorage.setItem(`list:${id}`, JSON.stringify(stored));
     setTodos(updated);
     setDragIndex(null);
+    originalOrder.current = [];
   }
 
   return (
@@ -106,11 +116,18 @@ export default function List() {
         {todos.map((todo, i) => (
           <li
             key={todo.id}
-            className={`todo-item${todo.completed ? ' completed' : ''}`}
+            className={`todo-item${todo.completed ? ' completed' : ''}${dragIndex === i ? ' dragging' : ''}`}
             draggable
-            onDragStart={() => setDragIndex(i)}
-            onDragOver={e => e.preventDefault()}
-            onDrop={() => handleDrop(i)}
+            onDragStart={() => {
+              originalOrder.current = todos;
+              setDragIndex(i);
+            }}
+            onDragOver={e => {
+              e.preventDefault();
+              handleDragOver(i);
+            }}
+            onDrop={handleDrop}
+            onDragEnd={() => setDragIndex(null)}
           >
             <label>
               <input
