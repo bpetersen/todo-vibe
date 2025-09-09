@@ -20,6 +20,12 @@ test('invites feedback link', () => {
   expect(link).toHaveAttribute('href', expect.stringContaining('github.com'));
 });
 
+test('feedback footer stays fixed to bottom', () => {
+  render(<App />);
+  const footer = screen.getByRole('contentinfo');
+  expect(getComputedStyle(footer).position).toBe('fixed');
+});
+
 const originalLocation = window.location;
 const originalPrompt = window.prompt;
 const originalUUID = global.crypto.randomUUID;
