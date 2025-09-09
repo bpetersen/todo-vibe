@@ -81,7 +81,9 @@ test('exports all lists as a json file', async () => {
 
   render(<App />);
   fireEvent.click(screen.getByLabelText(/menu/i));
-  fireEvent.click(screen.getByRole('button', { name: /export state/i }));
+  const exportButton = screen.getByRole('button', { name: /export state/i });
+  expect(exportButton).toHaveClass('menu-item');
+  fireEvent.click(exportButton);
 
   await waitFor(() => {
     expect(urlSpy).toHaveBeenCalled();

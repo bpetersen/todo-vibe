@@ -42,7 +42,9 @@ export default function App() {
       </button>
       {menuOpen && (
         <div className="menu">
-          <button onClick={exportState}>Export state</button>
+          <button className="menu-item" onClick={exportState}>
+            Export state
+          </button>
         </div>
       )}
       <h1>Todo Vibe</h1>
