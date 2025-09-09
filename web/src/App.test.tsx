@@ -14,6 +14,12 @@ test('renders intro layout', () => {
   ).toHaveClass('start-button');
 });
 
+test('links to list manager', () => {
+  render(<App />);
+  const link = screen.getByRole('link', { name: /view lists/i });
+  expect(link).toHaveAttribute('href', '/lists');
+});
+
 test('invites feedback link', () => {
   render(<App />);
   const link = screen.getByRole('link', { name: /feedback/i });

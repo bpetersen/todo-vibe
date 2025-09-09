@@ -59,6 +59,7 @@ export default function App() {
       <button className="start-button" onClick={createList}>
         Start a new list
       </button>
+      <a href="/lists">View lists</a>
       <FeedbackFooter />
     </main>
   );
