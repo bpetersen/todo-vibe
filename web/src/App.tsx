@@ -1,6 +1,8 @@
+import { useState } from 'react';
 import './App.css';
 
 export default function App() {
+  const [menuOpen, setMenuOpen] = useState(false);
   async function createList() {
     const name = window.prompt('List name?') ?? 'New List';
     const id = crypto.randomUUID();
@@ -9,7 +11,7 @@ export default function App() {
     window.location.assign(`/lists/${id}`);
   }
 
-  function downloadState() {
+  function exportState() {
     const lists = [] as unknown[];
     for (let i = 0; i < localStorage.length; i++) {
       const key = localStorage.key(i);
@@ -31,12 +33,23 @@ export default function App() {
 
   return (
     <main className="intro">
+      <button
+        className="menu-button"
+        aria-label="Menu"
+        onClick={() => setMenuOpen(!menuOpen)}
+      >
+        ☰
+      </button>
+      {menuOpen && (
+        <div className="menu">
+          <button onClick={exportState}>Export state</button>
+        </div>
+      )}
       <h1>Todo Vibe</h1>
       <p className="tagline">Organize your tasks with style</p>
       <button className="start-button" onClick={createList}>
         Start a new list
       </button>
-      <button onClick={downloadState}>Download state</button>
     </main>
   );
 }

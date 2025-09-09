@@ -55,7 +55,7 @@ test('stores a new list in local storage with a name', async () => {
   });
 });
 
-test('downloads all lists as a json file', async () => {
+test('exports all lists as a json file', async () => {
   localStorage.setItem(
     'list:l1',
     JSON.stringify({ id: 'l1', name: 'Groceries', todos: [] })
@@ -80,7 +80,8 @@ test('downloads all lists as a json file', async () => {
     .mockImplementation(() => {});
 
   render(<App />);
-  fireEvent.click(screen.getByRole('button', { name: /download state/i }));
+  fireEvent.click(screen.getByLabelText(/menu/i));
+  fireEvent.click(screen.getByRole('button', { name: /export state/i }));
 
   await waitFor(() => {
     expect(urlSpy).toHaveBeenCalled();

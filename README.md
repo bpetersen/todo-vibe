@@ -24,4 +24,4 @@ See [AGENTS.md](AGENTS.md) for collaboration guidelines and event-driven/TDD con
    npm run dev
    ```
 
-Open the browser at the URL printed in the console to create lists and todos. Data persists locally in your browser between sessions, and you can download all saved lists as a JSON backup via the **Download state** button.
+Open the browser at the URL printed in the console to create lists and todos. Data persists locally in your browser between sessions, and you can export all saved lists as a JSON backup from the menu in the top right.
