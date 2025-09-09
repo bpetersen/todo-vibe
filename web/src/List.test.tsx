@@ -128,6 +128,10 @@ test('reorders todos via drag and drop', async () => {
   };
   fireEvent.dragStart(secondLi, { dataTransfer: data });
   fireEvent.dragOver(firstLi, { dataTransfer: data });
+  await waitFor(() => {
+    const duringDrag = screen.getAllByRole('listitem');
+    expect(duringDrag[0]).toHaveTextContent('B');
+  });
   fireEvent.drop(firstLi, { dataTransfer: data });
 
   await waitFor(() => {
