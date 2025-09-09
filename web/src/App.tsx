@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import './App.css';
+import FeedbackFooter from './FeedbackFooter';
 
 export default function App() {
   const [menuOpen, setMenuOpen] = useState(false);
@@ -52,6 +53,7 @@ export default function App() {
       <button className="start-button" onClick={createList}>
         Start a new list
       </button>
+      <FeedbackFooter />
     </main>
   );
 }

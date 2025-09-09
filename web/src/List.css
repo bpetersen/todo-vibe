@@ -16,6 +16,7 @@ body {
   font-family: 'Poppins', system-ui, sans-serif;
   background: linear-gradient(135deg, var(--bg-start), var(--bg-end));
   color: #333;
+  position: relative;
 }
 
 .list h1 {

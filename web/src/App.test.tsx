@@ -14,6 +14,12 @@ test('renders intro layout', () => {
   ).toHaveClass('start-button');
 });
 
+test('invites feedback link', () => {
+  render(<App />);
+  const link = screen.getByRole('link', { name: /feedback/i });
+  expect(link).toHaveAttribute('href', expect.stringContaining('github.com'));
+});
+
 const originalLocation = window.location;
 const originalPrompt = window.prompt;
 const originalUUID = global.crypto.randomUUID;

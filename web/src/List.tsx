@@ -1,5 +1,6 @@
 import { useEffect, useState, useRef } from 'react';
 import './List.css';
+import FeedbackFooter from './FeedbackFooter';
 import { CreateTodo } from '../../src/domain/todo/CreateTodo';
 import { CompleteTodo } from '../../src/domain/todo/CompleteTodo';
 import { ReopenTodo } from '../../src/domain/todo/ReopenTodo';
@@ -140,6 +141,7 @@ export default function List() {
           </li>
         ))}
       </ul>
+      <FeedbackFooter />
     </main>
   );
 }
