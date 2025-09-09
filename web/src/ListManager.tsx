@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react';
+import './ListManager.css';
 
 interface List {
   id: string;
@@ -60,16 +61,23 @@ export default function ListManager() {
   return (
     <main className="list-manager">
       <h1>Your Lists</h1>
-      <button onClick={createList}>New list</button>
-      <ul>
+      <button className="new-list-button" onClick={createList}>
+        New list
+      </button>
+      <ul className="list-cards">
         {lists.map(list => {
           const completed = list.todos.filter(t => t.completed).length;
           const total = list.todos.length;
           return (
-            <li key={list.id}>
-              <a href={`/lists/${list.id}`}>{list.name}</a> <span>{completed}/{total}</span>
-              <button onClick={() => renameList(list.id)}>Rename</button>
-              <button onClick={() => archiveList(list.id)}>Archive</button>
+            <li key={list.id} className="list-card">
+              <a href={`/lists/${list.id}`}>{list.name}</a>
+              <span className="counts">
+                {completed}/{total}
+              </span>
+              <div className="actions">
+                <button onClick={() => renameList(list.id)}>Rename</button>
+                <button onClick={() => archiveList(list.id)}>Archive</button>
+              </div>
             </li>
           );
         })}

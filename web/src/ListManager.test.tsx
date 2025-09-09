@@ -49,10 +49,14 @@ test('lists active lists ordered by creation date with counts', async () => {
   );
 
   render(<ListManager />);
+  const list = await screen.findByRole('list');
+  expect(list).toHaveClass('list-cards');
   const items = await screen.findAllByRole('listitem');
   expect(items).toHaveLength(2);
+  expect(items[0]).toHaveClass('list-card');
   expect(items[0]).toHaveTextContent('First');
   expect(items[0]).toHaveTextContent('1/2');
+  expect(items[1]).toHaveClass('list-card');
   expect(items[1]).toHaveTextContent('Second');
   expect(items[1]).toHaveTextContent('1/1');
 });
