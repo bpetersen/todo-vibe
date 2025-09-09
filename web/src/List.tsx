@@ -116,7 +116,7 @@ export default function List() {
         {todos.map((todo, i) => (
           <li
             key={todo.id}
-            className={`todo-item${todo.completed ? ' completed' : ''}`}
+            className={`todo-item${todo.completed ? ' completed' : ''}${dragIndex === i ? ' dragging' : ''}`}
             draggable
             onDragStart={() => {
               originalOrder.current = todos;
@@ -127,6 +127,7 @@ export default function List() {
               handleDragOver(i);
             }}
             onDrop={handleDrop}
+            onDragEnd={() => setDragIndex(null)}
           >
             <label>
               <input

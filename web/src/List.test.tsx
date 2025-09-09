@@ -127,12 +127,14 @@ test('reorders todos via drag and drop', async () => {
     setDragImage: () => {},
   };
   fireEvent.dragStart(secondLi, { dataTransfer: data });
+  await waitFor(() => expect(secondLi).toHaveClass('dragging'));
   fireEvent.dragOver(firstLi, { dataTransfer: data });
   await waitFor(() => {
     const duringDrag = screen.getAllByRole('listitem');
     expect(duringDrag[0]).toHaveTextContent('B');
   });
   fireEvent.drop(firstLi, { dataTransfer: data });
+  await waitFor(() => expect(secondLi).not.toHaveClass('dragging'));
 
   await waitFor(() => {
     const saved = JSON.parse(localStorage.getItem('list:abc123')!);
