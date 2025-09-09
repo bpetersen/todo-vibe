@@ -56,10 +56,17 @@ export default function App() {
       )}
       <h1>Todo Vibe</h1>
       <p className="tagline">Organize your tasks with style</p>
-      <button className="start-button" onClick={createList}>
-        Start a new list
-      </button>
-      <a href="/lists">View lists</a>
+      <div className="split-button">
+        <button className="split-button-half" onClick={createList}>
+          New
+        </button>
+        <button
+          className="split-button-half"
+          onClick={() => window.location.assign('/lists')}
+        >
+          Continue
+        </button>
+      </div>
       <FeedbackFooter />
     </main>
   );

@@ -29,21 +29,27 @@ body {
   color: #555;
 }
 
-.start-button {
+.split-button {
   margin-top: 2rem;
+  display: flex;
+  border-radius: 9999px;
+  overflow: hidden;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.15);
+}
+
+.split-button-half {
+  flex: 1;
   background: linear-gradient(135deg, var(--primary), var(--accent));
   color: #fff;
   padding: 0.75rem 1.5rem;
   border: none;
-  border-radius: 9999px;
   font-size: 1rem;
   font-weight: 600;
   cursor: pointer;
-  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.15);
   transition: transform 0.2s, box-shadow 0.2s;
 }
 
-.start-button:hover {
+.split-button-half:hover {
   transform: translateY(-2px);
   box-shadow: 0 6px 20px rgba(0, 0, 0, 0.2);
 }
