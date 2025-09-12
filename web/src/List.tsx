@@ -107,6 +107,9 @@ export default function List() {
 
   return (
     <main className="list">
+      <nav aria-label="Breadcrumb" className="breadcrumbs">
+        <a href="/lists">All lists</a> / {name}
+      </nav>
       <h1>{name}</h1>
       <input
         type="text"
