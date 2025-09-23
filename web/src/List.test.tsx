@@ -28,6 +28,23 @@ test('renders list name from local storage', async () => {
   expect(screen.getByPlaceholderText(/add a todo/i)).toBeInTheDocument();
 });
 
+test('links back to all lists', async () => {
+  localStorage.setItem(
+    'list:abc123',
+    JSON.stringify({ id: 'abc123', name: 'Groceries', todos: [] })
+  );
+
+  Object.defineProperty(window, 'location', {
+    value: { ...window.location, pathname: '/lists/abc123' },
+    writable: true,
+  });
+
+  render(<List />);
+
+  const link = await screen.findByRole('link', { name: /all lists/i });
+  expect(link).toHaveAttribute('href', '/lists');
+});
+
 test('invites feedback link', async () => {
   localStorage.setItem(
     'list:abc123',
